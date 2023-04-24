@@ -1,0 +1,177 @@
+
+----------------- tester l'ajout d'un adherent --------------------------------
+
+declare
+ajouter biblio_type; 
+begin
+SELECT VALUE(e) INTO ajouter FROM bibliotheque e WHERE e.numbiblio = '1111';
+ ajouter.ajouterAdherent('attik','marwa','7896');
+end;
+/
+
+select  a.numAd,a.nom,a.prenom from Adherent a;
+
+---------------------------------------------------------------------------------------
+
+-------------------------- tester la suppression d'un adherent ------------------------
+
+declare
+supp biblio_type; 
+begin
+SELECT VALUE(e) INTO supp FROM bibliotheque e WHERE e.numbiblio = '1111';
+ supp.enleverAdherent('marwa','attik','7896');
+end;
+/
+
+select  a.numAd,a.nom,a.prenom from Adherent a;
+
+---------------------------------------------------------------------------------------
+
+-------------------------- tester l'ajout d'un document ------------------------
+
+
+
+declare
+ajouterdoc biblio_type; 
+begin
+SELECT VALUE(e) INTO ajouterdoc FROM bibliotheque e WHERE e.numbiblio = '1111';
+ ajouterdoc.ajouterDocument('8889','ajouter depuis fct');
+end;
+/
+
+
+ select c.NUMDOC,c. TITRE from document c;
+
+
+---------------------------------------------------------------------------------------
+
+-------------------------- tester l'emprunt de livre ------------------------
+
+
+SET SERVEROUTPUT ON
+
+
+
+declare
+    ad adherent_type; 
+begin
+SELECT VALUE(e) INTO ad FROM adherent e WHERE prenom = 'hala';
+
+
+ad.emprunterLivre('9861', '01-05-2022','05-05-2022');
+ad.emprunterLivre('9862', '02-05-2022','06-05-2022');
+ad.emprunterLivre('9863', '09-05-2022','11-05-2022');
+
+
+
+end;
+/
+
+----------------------------- plus que 3 livre test --------------
+
+
+declare
+    ad adherent_type; 
+begin
+SELECT VALUE(e) INTO ad FROM adherent e WHERE prenom = 'hala';
+
+ad.emprunterLivre('9860', '10-05-2022','12-05-2022');
+
+
+end;
+/
+
+
+---------------------------- rendre livre avant 15 jours ----------------
+
+
+declare
+    ad adherent_type; 
+begin
+SELECT VALUE(e) INTO ad FROM adherent e WHERE prenom = 'hala';
+
+
+ad.rendreLivre('9861','05-05-2022');
+
+
+end;
+/
+
+
+-------------------------------------rendre avec depassement de 15 jours warning ------------------
+---------------------- 1 er warning ------------------
+
+declare
+    ad adherent_type; 
+begin
+SELECT VALUE(e) INTO ad FROM adherent e WHERE prenom = 'hala';
+
+
+ad.rendreLivre('9863','10-06-2022');
+
+
+end;
+/
+
+--------------- 2 autre warning et il ne peut plus emprunter de livre
+
+
+
+
+declare
+    ad adherent_type; 
+begin
+SELECT VALUE(e) INTO ad FROM adherent e WHERE prenom = 'hala';
+
+
+ad.emprunterLivre('9861', '01-07-2022','05-07-2022');
+ad.emprunterLivre('9862', '02-07-2022','06-07-2022');
+ad.emprunterLivre('9863', '20-07-2022','21-07-2022');
+
+
+ad.rendreLivre('9862','10-08-2022');
+ad.rendreLivre('9861','20-08-2022');
+
+
+ad.emprunterLivre('9860', '10-08-2022','12-08-2022');
+
+
+end;
+/
+
+
+----------------------------------------------------------------------------------------------------
+
+---------------------------------- un autre adherent essaye d'emprunter un livre qui n'est pas disponible --------------
+
+
+
+declare
+ajouter biblio_type; 
+begin
+SELECT VALUE(e) INTO ajouter FROM bibliotheque e WHERE e.numbiblio = '1111';
+ ajouter.ajouterAdherent('attik','marwa','7896');
+end;
+/
+
+select  a.numAd,a.nom,a.prenom from Adherent a;
+
+
+
+declare
+    ad adherent_type; 
+begin
+SELECT VALUE(e) INTO ad FROM adherent e WHERE prenom = 'marwa';
+
+
+ad.emprunterLivre('9861', '12-09-2022','18-09-2022');
+ad.emprunterLivre('9862', '12-09-2022','18-09-2022');
+ad.emprunterLivre('9863', '12-09-2022','18-09-2022');
+
+
+
+end;
+/
+
+
+
